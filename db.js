@@ -22,7 +22,9 @@ const createUser = async ({ username, email, displayName, passwordHash }) => {
     id: user._id.toString(),
     username: user.username,
     email: user.email,
-    displayName: user.displayName
+    displayName: user.displayName,
+    bio: user.bio,
+    profilePicture: user.profilePicture
   };
 };
 
@@ -45,4 +47,17 @@ const getUserById = async (id) => {
   }
 };
 
-module.exports = { init, createUser, findUserByUsernameOrEmail, getUserById, User };
+const updateUserProfile = async (id, { displayName, bio, profilePicture }) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      { displayName, bio, profilePicture },
+      { new: true }
+    ).select('-passwordHash');
+    return user || null;
+  } catch (err) {
+    return null;
+  }
+};
+
+module.exports = { init, createUser, findUserByUsernameOrEmail, getUserById, updateUserProfile, User };

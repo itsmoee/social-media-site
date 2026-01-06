@@ -24,225 +24,88 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="messages.html">Messages</a></li>
-                    <li class="nav-item"><a class="nav-link" href="settings.html">Settings</a></li>
+                    <li class="nav-item" id="nav-profile" style="display: none;"><a class="nav-link" href="profile.html">Profile</a></li>
+                    <li class="nav-item" id="nav-messages" style="display: none;"><a class="nav-link" href="messages.html">Messages</a></li>
+                    <li class="nav-item" id="nav-settings" style="display: none;"><a class="nav-link" href="settings.html">Settings</a></li>
                     <li class="nav-item" id="nav-auth"></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Jumbotron Banner -->
-    <div class="jumbotron text-white py-5">
-        <div class="container">
-            <h1 class="display-4">Bienvenue sur Wasla</h1>
-            <p class="lead">Connectez, partagez et inspirez votre communauté.</p>
-            <button class="btn btn-light btn-lg" type="button">Découvrir</button>
+    <!-- Landing Page (shown when not authenticated) -->
+    <div id="landing-page">
+        <!-- Jumbotron Banner -->
+        <div class="jumbotron text-white py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 60vh; display: flex; align-items: center;">
+            <div class="container text-center">
+                <h1 class="display-3 fw-bold mb-4">Welcome to Wasla</h1>
+                <p class="lead mb-4 fs-5">Connect, share, and inspire your community</p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <button class="btn btn-light btn-lg px-5" type="button" data-bs-toggle="modal" data-bs-target="#loginModal">Log In</button>
+                    <button class="btn btn-outline-light btn-lg px-5" type="button" data-bs-toggle="modal" data-bs-target="#registerModal">Sign Up</button>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- Main Content -->
-    <div class="container my-5">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-lg-3">
-                <div class="card mb-4">
-                    <div class="card-body text-center">
-                        <img src="https://via.placeholder.com/150" alt="User Avatar" class="rounded-circle mb-3" width="100">
-                        <h5 class="card-title">John Doe</h5>
-                        <p class="text-muted small">@johndoe</p>
-                        <button class="btn btn-primary btn-sm me-2">Follow</button>
-                        <button class="btn btn-outline-primary btn-sm">Message</button>
-                    </div>
+        <!-- Features Section -->
+        <div class="container my-5">
+            <div class="row g-4">
+                <div class="col-md-4 text-center">
+                    <div class="mb-3" style="font-size: 3rem; font-style: normal;">👥</div>
+                    <h5>Connect with Others</h5>
+                    <p class="text-muted">Build your network and share your thoughts with the community.</p>
                 </div>
-
-                <!-- Trending Cards -->
-                <div class="card">
-                    <div class="card-header bg-secondary text-white">
-                        <h6 class="mb-0">Trending Now</h6>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <strong>#WebDevelopment</strong>
-                            <p class="text-muted small mb-0">15.2K posts</p>
-                        </li>
-                        <li class="list-group-item">
-                            <strong>#JavaScript</strong>
-                            <p class="text-muted small mb-0">12.5K posts</p>
-                        </li>
-                        <li class="list-group-item">
-                            <strong>#Bootstrap</strong>
-                            <p class="text-muted small mb-0">8.9K posts</p>
-                        </li>
-                    </ul>
+                <div class="col-md-4 text-center">
+                    <div class="mb-3" style="font-size: 3rem; font-style: normal;">💬</div>
+                    <h5>Share Your Ideas</h5>
+                    <p class="text-muted">Post updates, photos, and connect with people who share your interests.</p>
                 </div>
-            </div>
-
-            <!-- Feed -->
-            <div class="col-lg-6">
-                <!-- New Post Card -->
-                <div class="card mb-4 post-card">
-                    <div class="card-body">
-                        <div class="d-flex mb-3">
-                            <img src="https://via.placeholder.com/40" alt="Avatar" class="rounded-circle me-2" width="40">
-                            <input type="text" class="form-control rounded-pill" placeholder="What's on your mind?">
-                        </div>
-                        <button class="btn btn-primary me-2">
-                            <i>📸</i> Photo
-                        </button>
-                        <button class="btn btn-success">
-                            <i>😊</i> Feeling
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Post 1 -->
-                <div class="card mb-4 post-card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="https://via.placeholder.com/45" alt="Avatar" class="rounded-circle me-3" width="45">
-                            <div>
-                                <h6 class="mb-0"><strong>Sarah Smith</strong></h6>
-                                <small class="text-muted">2 hours ago</small>
-                            </div>
-                        </div>
-                        <p class="card-text">Just finished an amazing Bootstrap project! Love how easy it is to create responsive designs. 💻</p>
-                        <img src="https://via.placeholder.com/500x300" alt="Post Image" class="img-fluid rounded mb-3">
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-sm btn-light">
-                                <i>❤️</i> 234 Likes
-                            </button>
-                            <button class="btn btn-sm btn-light">
-                                <i>💬</i> 45 Comments
-                            </button>
-                            <button class="btn btn-sm btn-light">
-                                <i>↗️</i> Share
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Post 2 -->
-                <div class="card mb-4 post-card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="https://via.placeholder.com/45" alt="Avatar" class="rounded-circle me-3" width="45">
-                            <div>
-                                <h6 class="mb-0"><strong>Mike Johnson</strong></h6>
-                                <small class="text-muted">5 hours ago</small>
-                            </div>
-                        </div>
-                        <p class="card-text">Check out this carousel I created using Bootstrap! Perfect for showcasing multiple items. 🎨</p>
-                    </div>
-                    <div id="carouselExample" class="carousel slide">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="https://via.placeholder.com/500x300?text=Slide+1" class="d-block w-100" alt="Slide 1">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="https://via.placeholder.com/500x300?text=Slide+2" class="d-block w-100" alt="Slide 2">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="https://via.placeholder.com/500x300?text=Slide+3" class="d-block w-100" alt="Slide 3">
-                            </div>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon"></span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                            <span class="carousel-control-next-icon"></span>
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-sm btn-light">
-                                <i>❤️</i> 567 Likes
-                            </button>
-                            <button class="btn btn-sm btn-light">
-                                <i>💬</i> 120 Comments
-                            </button>
-                            <button class="btn btn-sm btn-light">
-                                <i>↗️</i> Share
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Post 3 with Alert -->
-                <div class="card mb-4 post-card">
-                    <div class="card-body">
-                        <div class="alert alert-info alert-dismissible fade show" role="alert">
-                            <strong>New Feature!</strong> Modal dialogs are now available for detailed posts.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="https://via.placeholder.com/45" alt="Avatar" class="rounded-circle me-3" width="45">
-                            <div>
-                                <h6 class="mb-0"><strong>Emily Davis</strong></h6>
-                                <small class="text-muted">8 hours ago</small>
-                            </div>
-                        </div>
-                        <p class="card-text">Excited to share my new portfolio! Check out what I've been working on. 🚀</p>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#postModal">
-                            View Full Post
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Sidebar -->
-            <div class="col-lg-3">
-                <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h6 class="mb-0">Suggested Friends</h6>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-0">Alex Turner</h6>
-                                <small class="text-muted">@alexturner</small>
-                            </div>
-                            <button class="btn btn-primary btn-sm">Add</button>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-0">Lisa Wong</h6>
-                                <small class="text-muted">@lisawong</small>
-                            </div>
-                            <button class="btn btn-primary btn-sm">Add</button>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-0">James Brown</h6>
-                                <small class="text-muted">@jbrown</small>
-                            </div>
-                            <button class="btn btn-primary btn-sm">Add</button>
-                        </li>
-                    </ul>
+                <div class="col-md-4 text-center">
+                    <div class="mb-3" style="font-size: 3rem; font-style: normal;">🌟</div>
+                    <h5>Build Your Brand</h5>
+                    <p class="text-muted">Create a profile, showcase your work, and grow your influence.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="postModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Emily's Portfolio</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <img src="https://via.placeholder.com/500x300" alt="Portfolio" class="img-fluid mb-3 rounded">
-                    <p><strong>Emily Davis</strong> shared her amazing portfolio project featuring modern web design with Bootstrap and responsive layouts. Check it out at her website!</p>
-                    <div class="alert alert-success">
-                        <strong>Great Work!</strong> This project demonstrates excellent use of Bootstrap components.
+    <!-- Home Feed (shown when authenticated) -->
+    <div id="home-feed" style="display: none;">
+        <div class="container my-5">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-3">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <img id="sidebar-avatar" src="https://via.placeholder.com/150" alt="User Avatar" class="rounded-circle mb-3" width="100">
+                            <h5 class="card-title" id="sidebar-name">User</h5>
+                            <p class="text-muted small" id="sidebar-username">@user</p>
+                            <a href="profile.html" class="btn btn-primary btn-sm">View Profile</a>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Visit Portfolio</button>
+
+                <!-- Feed -->
+                <div class="col-lg-6">
+                    <div class="card mb-4 post-card">
+                        <div class="card-body">
+                            <p class="text-muted">Welcome to Wasla! Start by creating your first post or following other users.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                <div class="col-lg-3">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0">Get Started</h6>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a href="profile.html" class="list-group-item list-group-item-action">Complete Your Profile</a>
+                            <a href="messages.html" class="list-group-item list-group-item-action">Send Your First Message</a>
+                            <a href="settings.html" class="list-group-item list-group-item-action">Customize Your Settings</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -259,9 +122,6 @@
             </p>
         </div>
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/script.js"></script>
 
     <!-- Auth Modals -->
     <div class="modal fade" id="loginModal" tabindex="-1">
@@ -323,5 +183,8 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>

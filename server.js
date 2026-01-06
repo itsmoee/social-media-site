@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const cors = require('cors');
 require('dotenv').config();
 
-const { init, createUser, findUserByUsernameOrEmail, getUserById } = require('./db');
+const { init, createUser, findUserByUsernameOrEmail, getUserById, updateUserProfile } = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -61,6 +61,8 @@ function startServer() {
       username: u.username,
       email: u.email,
       displayName: u.displayName,
+      bio: u.bio,
+      profilePicture: u.profilePicture,
       createdAt: u.createdAt
     };
   }
@@ -124,6 +126,18 @@ function startServer() {
     try {
       if (!req.session || !req.session.userId) return res.json({ user: null });
       const user = await getUserById(req.session.userId);
+      res.json({ user: toPublicUser(user) });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  app.post('/api/user/profile', requireAuth, async (req, res) => {
+    try {
+      const { displayName, bio, profilePicture } = req.body || {};
+      const user = await updateUserProfile(req.session.userId, { displayName, bio, profilePicture });
+      if (!user) return res.status(404).json({ error: 'User not found' });
       res.json({ user: toPublicUser(user) });
     } catch (err) {
       console.error(err);

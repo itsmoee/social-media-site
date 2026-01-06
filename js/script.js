@@ -78,14 +78,33 @@ async function initAuth() {
     try {
         const res = await fetch('/api/auth/me', { credentials: 'include' });
         const data = await res.json();
-        renderAuthNav(data.user);
-
-        // Auto-open login modal if redirected with login=1
-        const url = new URL(window.location.href);
-        if (!data.user && url.searchParams.get('login') === '1') {
-            const loginModalEl = document.getElementById('loginModal');
-            if (loginModalEl) new bootstrap.Modal(loginModalEl).show();
+        
+        if (data.user) {
+            // Show authenticated UI
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('home-feed').style.display = 'block';
+            document.getElementById('nav-profile').style.display = 'block';
+            document.getElementById('nav-messages').style.display = 'block';
+            document.getElementById('nav-settings').style.display = 'block';
+            
+            // Populate sidebar with user data
+            const avatar = data.user.profilePicture || 'https://via.placeholder.com/150';
+            document.getElementById('sidebar-avatar').src = avatar;
+            document.getElementById('sidebar-name').textContent = data.user.displayName || data.user.username;
+            document.getElementById('sidebar-username').textContent = '@' + data.user.username;
+        } else {
+            // Show landing page and auto-open login modal if redirected
+            document.getElementById('landing-page').style.display = 'block';
+            document.getElementById('home-feed').style.display = 'none';
+            
+            const url = new URL(window.location.href);
+            if (url.searchParams.get('login') === '1') {
+                const loginModalEl = document.getElementById('loginModal');
+                if (loginModalEl) new bootstrap.Modal(loginModalEl).show();
+            }
         }
+        
+        renderAuthNav(data.user);
 
         // Wire auth forms if present
         const loginForm = document.getElementById('loginForm');
@@ -102,7 +121,6 @@ async function initAuth() {
                     body: JSON.stringify({ identifier, password })
                 });
                 if (resp.ok) {
-                    // Close modal and refresh UI
                     tryHideModal('loginModal');
                     location.reload();
                 } else {
