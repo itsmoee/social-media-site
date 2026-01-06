@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load dynamic content
     loadUserData();
+
+    // Initialize auth UI
+    initAuth();
 });
 
 // Initialize Bootstrap tooltips
@@ -68,6 +71,114 @@ function loadUserData() {
 
     // You can use this data to populate the page
     console.log('User Data:', userData);
+}
+
+// ===== Auth Integration =====
+async function initAuth() {
+    try {
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        const data = await res.json();
+        renderAuthNav(data.user);
+
+        // Auto-open login modal if redirected with login=1
+        const url = new URL(window.location.href);
+        if (!data.user && url.searchParams.get('login') === '1') {
+            const loginModalEl = document.getElementById('loginModal');
+            if (loginModalEl) new bootstrap.Modal(loginModalEl).show();
+        }
+
+        // Wire auth forms if present
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const identifier = form.identifier.value.trim();
+                const password = form.password.value.trim();
+                const resp = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ identifier, password })
+                });
+                if (resp.ok) {
+                    // Close modal and refresh UI
+                    tryHideModal('loginModal');
+                    location.reload();
+                } else {
+                    const err = await resp.json().catch(() => ({}));
+                    alert(err.error || 'Login failed');
+                }
+            });
+        }
+
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const payload = {
+                    username: form.username.value.trim(),
+                    email: form.email.value.trim(),
+                    displayName: form.displayName.value.trim(),
+                    password: form.password.value.trim()
+                };
+                const resp = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+                if (resp.ok) {
+                    tryHideModal('registerModal');
+                    location.reload();
+                } else {
+                    const err = await resp.json().catch(() => ({}));
+                    alert(err.error || 'Registration failed');
+                }
+            });
+        }
+
+    } catch (e) {
+        console.error('Auth init error', e);
+    }
+}
+
+function renderAuthNav(user) {
+    const navAuth = document.getElementById('nav-auth');
+    if (!navAuth) return;
+    if (user) {
+        navAuth.innerHTML = `
+            <div class="dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                ${escapeHtml(user.username)}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="profile.html">My Profile</a></li>
+                <li><a class="dropdown-item" href="settings.html">Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><button class="dropdown-item" id="btn-logout">Log out</button></li>
+              </ul>
+            </div>`;
+        const btnLogout = document.getElementById('btn-logout');
+        if (btnLogout) {
+            btnLogout.addEventListener('click', async () => {
+                await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+                location.href = 'index.html';
+            });
+        }
+    } else {
+        navAuth.innerHTML = `
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Log in</a>
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Sign up</a>`;
+    }
+}
+
+function tryHideModal(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const instance = bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el);
+    instance.hide();
 }
 
 // Send message function
