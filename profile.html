@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - SocialHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <strong>SocialHub</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="profile.html">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="messages.html">Messages</a></li>
+                    <li class="nav-item"><a class="nav-link" href="settings.html">Settings</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Banner -->
+    <div class="bg-primary text-white py-5">
+        <div class="container">
+            <div class="d-flex align-items-center gap-4">
+                <img src="https://via.placeholder.com/150" alt="Profile" class="rounded-circle border border-5 border-white" width="150">
+                <div>
+                    <h1 class="display-5 mb-2">John Doe</h1>
+                    <p class="lead mb-3">@johndoe | Web Developer | Bootstrap Enthusiast</p>
+                    <div>
+                        <button class="btn btn-light me-2">Follow</button>
+                        <button class="btn btn-outline-light">Message</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Content -->
+    <div class="container my-5">
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-3">
+                <!-- Stats Card -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6 border-end">
+                                <h5 class="mb-0">234</h5>
+                                <small class="text-muted">Posts</small>
+                            </div>
+                            <div class="col-6">
+                                <h5 class="mb-0">5.2K</h5>
+                                <small class="text-muted">Followers</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Card -->
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h6 class="mb-0">About</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-3">Passionate about web development and open-source projects.</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>Location:</strong> San Francisco, CA</li>
+                            <li class="mb-2"><strong>Website:</strong> johndoe.dev</li>
+                            <li><strong>Joined:</strong> March 2023</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Skills Card -->
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">Skills</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-primary">HTML</span>
+                            <span class="badge bg-primary">CSS</span>
+                            <span class="badge bg-primary">JavaScript</span>
+                            <span class="badge bg-primary">Bootstrap</span>
+                            <span class="badge bg-primary">React</span>
+                            <span class="badge bg-success">Node.js</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Column - Posts -->
+            <div class="col-lg-6">
+                <!-- Tab Navigation -->
+                <ul class="nav nav-tabs mb-4" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#posts" data-bs-toggle="tab">Posts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#gallery" data-bs-toggle="tab">Gallery</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#activity" data-bs-toggle="tab">Activity</a>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Posts Tab -->
+                    <div class="tab-pane fade show active" id="posts">
+                        <!-- Post Card 1 -->
+                        <div class="card mb-4 post-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h6 class="mb-0"><strong>My Latest Project</strong></h6>
+                                        <small class="text-muted">3 days ago</small>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">⋯</button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">Edit</a></li>
+                                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <p class="card-text">Just launched my portfolio website with Bootstrap 5! Took weeks but worth it. 🎉</p>
+                                <img src="https://via.placeholder.com/500x300" alt="Post" class="img-fluid rounded mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-sm btn-light">❤️ 456 Likes</button>
+                                    <button class="btn btn-sm btn-light">💬 89 Comments</button>
+                                    <button class="btn btn-sm btn-light">↗️ Share</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Post Card 2 -->
+                        <div class="card mb-4 post-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h6 class="mb-0"><strong>Web Development Tips</strong></h6>
+                                        <small class="text-muted">1 week ago</small>
+                                    </div>
+                                </div>
+                                <p class="card-text">Top 5 things I learned about responsive design this year. Check it out! 📚</p>
+                                <div class="alert alert-info">
+                                    Learn more about responsive web design best practices.
+                                </div>
+                                <button class="btn btn-primary btn-sm">Read Article</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Tab -->
+                    <div class="tab-pane fade" id="gallery">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <img src="https://via.placeholder.com/250x250?text=Project+1" class="img-fluid rounded" alt="Gallery Image">
+                            </div>
+                            <div class="col-md-6">
+                                <img src="https://via.placeholder.com/250x250?text=Project+2" class="img-fluid rounded" alt="Gallery Image">
+                            </div>
+                            <div class="col-md-6">
+                                <img src="https://via.placeholder.com/250x250?text=Project+3" class="img-fluid rounded" alt="Gallery Image">
+                            </div>
+                            <div class="col-md-6">
+                                <img src="https://via.placeholder.com/250x250?text=Project+4" class="img-fluid rounded" alt="Gallery Image">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Tab -->
+                    <div class="tab-pane fade" id="activity">
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <strong>Liked</strong> a post by Sarah Smith
+                                    <br><small class="text-muted">2 hours ago</small>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Followed</strong> Mike Johnson
+                                    <br><small class="text-muted">5 hours ago</small>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Commented</strong> on Emily Davis's post
+                                    <br><small class="text-muted">1 day ago</small>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Posted</strong> new status
+                                    <br><small class="text-muted">2 days ago</small>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-3">
+                <!-- Following Card -->
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0">Following (127)</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://via.placeholder.com/35" class="rounded-circle me-2" width="35">
+                            <div>
+                                <h6 class="mb-0 small">Sarah Smith</h6>
+                                <small class="text-muted">@sarahsmith</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://via.placeholder.com/35" class="rounded-circle me-2" width="35">
+                            <div>
+                                <h6 class="mb-0 small">Mike Johnson</h6>
+                                <small class="text-muted">@mjohnson</small>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-sm w-100">View All</a>
+                    </div>
+                </div>
+
+                <!-- Achievements -->
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h6 class="mb-0">Achievements</h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <div class="badge bg-gold fs-5 p-3">🏆</div>
+                            <p class="mb-0 small mt-2"><strong>Top Contributor</strong></p>
+                        </div>
+                        <div>
+                            <div class="badge bg-warning fs-5 p-3">⭐</div>
+                            <p class="mb-0 small mt-2"><strong>Popular Posts</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-2">&copy; 2026 SocialHub. All rights reserved.</p>
+            <p>
+                <a href="#" class="text-white me-3">Privacy Policy</a>
+                <a href="#" class="text-white me-3">Terms of Service</a>
+                <a href="#" class="text-white">Contact Us</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
