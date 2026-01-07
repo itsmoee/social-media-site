@@ -92,6 +92,9 @@ async function initAuth() {
             document.getElementById('sidebar-avatar').src = avatar;
             document.getElementById('sidebar-name').textContent = data.user.displayName || data.user.username;
             document.getElementById('sidebar-username').textContent = '@' + data.user.username;
+
+            // Load posts/feed
+            setupPosts();
         } else {
             // Show landing page and auto-open login modal if redirected
             document.getElementById('landing-page').style.display = 'block';
@@ -114,18 +117,35 @@ async function initAuth() {
                 const form = e.currentTarget;
                 const identifier = form.identifier.value.trim();
                 const password = form.password.value.trim();
-                const resp = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({ identifier, password })
-                });
-                if (resp.ok) {
-                    tryHideModal('loginModal');
-                    location.reload();
-                } else {
-                    const err = await resp.json().catch(() => ({}));
-                    alert(err.error || 'Login failed');
+                
+                if (!identifier || !password) {
+                    showError('Please fill in all fields');
+                    return;
+                }
+
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                
+                try {
+                    const resp = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ identifier, password })
+                    });
+                    if (resp.ok) {
+                        showSuccess('Logged in successfully');
+                        tryHideModal('loginModal');
+                        location.reload();
+                    } else {
+                        const err = await resp.json().catch(() => ({}));
+                        showError(err.error || 'Login failed');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showError('Network error. Please try again.');
+                } finally {
+                    submitBtn.disabled = false;
                 }
             });
         }
@@ -141,18 +161,44 @@ async function initAuth() {
                     displayName: form.displayName.value.trim(),
                     password: form.password.value.trim()
                 };
-                const resp = await fetch('/api/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify(payload)
-                });
-                if (resp.ok) {
-                    tryHideModal('registerModal');
-                    location.reload();
-                } else {
-                    const err = await resp.json().catch(() => ({}));
-                    alert(err.error || 'Registration failed');
+
+                // Validation
+                if (!payload.username || !payload.email || !payload.password) {
+                    showError('Please fill in all required fields');
+                    return;
+                }
+                if (payload.username.length < 3) {
+                    showError('Username must be at least 3 characters');
+                    return;
+                }
+                if (payload.password.length < 6) {
+                    showError('Password must be at least 6 characters');
+                    return;
+                }
+
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+
+                try {
+                    const resp = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify(payload)
+                    });
+                    if (resp.ok) {
+                        showSuccess('Account created! Complete your profile.');
+                        tryHideModal('registerModal');
+                        window.location.href = 'profile-setup.html';
+                    } else {
+                        const err = await resp.json().catch(() => ({}));
+                        showError(err.error || 'Registration failed');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showError('Network error. Please try again.');
+                } finally {
+                    submitBtn.disabled = false;
                 }
             });
         }
@@ -160,6 +206,154 @@ async function initAuth() {
     } catch (e) {
         console.error('Auth init error', e);
     }
+}
+
+// ===== Posts =====
+function setupPosts() {
+    const form = document.getElementById('createPostForm');
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const textarea = document.getElementById('postContent');
+            const content = textarea.value.trim();
+            
+            if (!content) {
+                showError('Post cannot be empty');
+                return;
+            }
+            
+            if (content.length > 500) {
+                showError('Post must be 500 characters or less');
+                return;
+            }
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Posting...';
+
+            try {
+                const resp = await fetch('/api/posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ content })
+                });
+                if (resp.ok) {
+                    textarea.value = '';
+                    showSuccess('Post created successfully');
+                    await loadPosts();
+                } else {
+                    const err = await resp.json().catch(() => ({}));
+                    showError(err.error || 'Failed to post');
+                }
+            } catch (err) {
+                console.error(err);
+                showError('Network error. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Post';
+            }
+        });
+    }
+
+    loadPosts();
+}
+
+async function loadPosts() {
+    try {
+        const resp = await fetch('/api/posts', { credentials: 'include' });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        renderPosts(data.posts || []);
+    } catch (err) {
+        console.error('loadPosts error', err);
+    }
+}
+
+function renderPosts(posts) {
+    const container = document.getElementById('posts-list');
+    if (!container) return;
+    if (!posts.length) {
+        container.innerHTML = '<div class="card mb-3"><div class="card-body text-muted">No posts yet. Be the first to share something!</div></div>';
+        return;
+    }
+
+    container.innerHTML = posts.map(post => renderPostCard(post)).join('');
+    
+    // Attach event listeners to like buttons
+    container.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const postId = btn.dataset.postId;
+            const resp = await fetch(`/api/posts/${postId}/like`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                btn.querySelector('.like-icon').textContent = data.liked ? '❤️' : '🤍';
+                btn.querySelector('.like-count').textContent = data.likeCount;
+            } else {
+                showError('Failed to like post');
+            }
+        });
+    });
+
+    // Attach delete listeners
+    container.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (confirm('Delete this post?')) {
+                const postId = btn.dataset.postId;
+                const resp = await fetch(`/api/posts/${postId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (resp.ok) {
+                    await loadPosts();
+                } else {
+                    const err = await resp.json().catch(() => ({}));
+                    showError(err.error || 'Failed to delete post');
+                }
+            }
+        });
+    });
+}
+
+function renderPostCard(post) {
+    const authorName = escapeHtml(post.author?.displayName || post.author?.username || 'User');
+    const username = escapeHtml(post.author?.username || 'user');
+    const avatar = post.author?.profilePicture || 'https://via.placeholder.com/80';
+    const content = escapeHtml(post.content || '');
+    const created = formatDate(post.createdAt);
+    const likeCount = post.likes?.length || 0;
+
+    return `
+      <div class="card mb-3 post-card" data-post-id="${post.id}">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-2 gap-3">
+            <img src="${avatar}" alt="${authorName}" class="rounded-circle" width="48" height="48" style="object-fit: cover;">
+            <div>
+              <div class="fw-semibold">${authorName}</div>
+              <small class="text-muted">@${username} - ${created}</small>
+            </div>
+          </div>
+          <p class="mb-3">${content}</p>
+          <div class="d-flex gap-3 border-top pt-2">
+            <button class="btn btn-sm btn-light like-btn" data-post-id="${post.id}">
+              <span class="like-icon">🤍</span> <span class="like-count">${likeCount}</span>
+            </button>
+            <button class="btn btn-sm btn-light comment-btn" data-post-id="${post.id}">💬 Comment</button>
+            <button class="btn btn-sm btn-light delete-btn" data-post-id="${post.id}">🗑️ Delete</button>
+          </div>
+        </div>
+      </div>
+    `;
+}
+
+function formatDate(date) {
+    const d = new Date(date);
+    return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
 function renderAuthNav(user) {
@@ -256,6 +450,42 @@ function escapeHtml(text) {
         "'": '&#039;'
     };
     return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+// Show error toast
+function showError(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast show position-fixed bottom-0 end-0 m-3';
+    toast.style.zIndex = '9999';
+    toast.innerHTML = `
+        <div class="toast-header bg-danger text-white">
+            <strong class="me-auto">Error</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body">
+            ${escapeHtml(message)}
+        </div>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+}
+
+// Show success toast
+function showSuccess(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast show position-fixed bottom-0 end-0 m-3';
+    toast.style.zIndex = '9999';
+    toast.innerHTML = `
+        <div class="toast-header bg-success text-white">
+            <strong class="me-auto">Success</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body">
+            ${escapeHtml(message)}
+        </div>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
 }
 
 // Add animation to elements on scroll
