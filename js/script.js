@@ -88,10 +88,18 @@ async function initAuth() {
             document.getElementById('nav-settings').style.display = 'block';
             
             // Populate sidebar with user data
-            const avatar = data.user.profilePicture || 'https://via.placeholder.com/150';
-            document.getElementById('sidebar-avatar').src = avatar;
-            document.getElementById('sidebar-name').textContent = data.user.displayName || data.user.username;
-            document.getElementById('sidebar-username').textContent = '@' + data.user.username;
+            const avatar = data.user.profilePicture || 'https://via.placeholder.com/150?text=Avatar';
+            const avatarImg = document.getElementById('sidebar-avatar');
+            if (avatarImg) {
+                avatarImg.src = avatar;
+                avatarImg.style.display = 'block';
+            }
+            
+            const nameEl = document.getElementById('sidebar-name');
+            if (nameEl) nameEl.textContent = data.user.displayName || data.user.username;
+            
+            const usernameEl = document.getElementById('sidebar-username');
+            if (usernameEl) usernameEl.textContent = '@' + data.user.username;
 
             // Load posts/feed
             setupPosts();

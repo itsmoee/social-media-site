@@ -186,14 +186,14 @@ const getConversations = async (userId) => {
     const messages = await Message.aggregate([
       {
         $match: {
-          $or: [{ sender: mongoose.Types.ObjectId(userId) }, { recipient: mongoose.Types.ObjectId(userId) }]
+          $or: [{ sender: new mongoose.Types.ObjectId(userId) }, { recipient: new mongoose.Types.ObjectId(userId) }]
         }
       },
       {
         $group: {
           _id: {
             $cond: [
-              { $eq: ['$sender', mongoose.Types.ObjectId(userId)] },
+              { $eq: ['$sender', new mongoose.Types.ObjectId(userId)] },
               '$recipient',
               '$sender'
             ]

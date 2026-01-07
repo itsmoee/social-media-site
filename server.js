@@ -4,6 +4,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo').default;
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
+const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
 const { init, createUser, findUserByUsernameOrEmail, getUserById, updateUserProfile, createPost, listPosts, deletePost, updatePost, toggleLike, getLikeCount, sendMessage, getConversation, getConversations, markMessagesAsRead, getUnreadCount } = require('./db');
@@ -12,6 +13,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'devsecret-change-me';
 const MONGODB_URI = process.env.MONGODB_URI;
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 if (!MONGODB_URI) {
   console.error('❌ Error: MONGODB_URI env var not set');
@@ -314,6 +322,33 @@ function startServer() {
     } catch (err) {
       console.error('update settings error:', err);
       res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // Upload image to Cloudinary
+  app.post('/api/upload', requireAuth, async (req, res) => {
+    try {
+      const { imageData } = req.body || {};
+      if (!imageData) return res.status(400).json({ error: 'Image data required' });
+
+      // Upload to Cloudinary
+      const result = await cloudinary.uploader.upload(imageData, {
+        folder: 'wasla-profiles',
+        resource_type: 'auto',
+        quality: 'auto',
+        fetch_format: 'auto',
+        width: 300,
+        height: 300,
+        crop: 'fill'
+      });
+
+      res.json({ 
+        url: result.secure_url,
+        publicId: result.public_id
+      });
+    } catch (err) {
+      console.error('upload error:', err);
+      res.status(500).json({ error: 'Upload failed' });
     }
   });
 

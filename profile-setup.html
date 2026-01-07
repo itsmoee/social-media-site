@@ -158,19 +158,30 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/upload.js"></script>
     <script>
-        let uploadedPhotoBase64 = null;
+        let uploadedPhotoUrl = null;
 
         // Photo upload handler
-        document.getElementById('photoInput').addEventListener('change', (e) => {
+        document.getElementById('photoInput').addEventListener('change', async (e) => {
             const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    uploadedPhotoBase64 = ev.target.result;
-                    document.getElementById('preview-photo').src = uploadedPhotoBase64;
-                };
-                reader.readAsDataURL(file);
+            if (!file) return;
+
+            // Show preview immediately
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                document.getElementById('preview-photo').src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            // Upload to Cloudinary in background
+            try {
+                uploadedPhotoUrl = await uploadImageToCloudinary(file);
+                console.log('Photo uploaded:', uploadedPhotoUrl);
+            } catch (err) {
+                console.error('Upload error:', err);
+                showError('Failed to upload image');
+                uploadedPhotoUrl = null;
             }
         });
 
@@ -194,8 +205,8 @@
                 return;
             }
 
-            if (!uploadedPhotoBase64) {
-                alert('Please upload a profile picture');
+            if (!uploadedPhotoUrl) {
+                showError('Please upload a profile picture');
                 return;
             }
 
@@ -208,7 +219,7 @@
                     body: JSON.stringify({
                         displayName,
                         bio,
-                        profilePicture: uploadedPhotoBase64
+                        profilePicture: uploadedPhotoUrl
                     })
                 });
 
@@ -217,11 +228,11 @@
                     window.location.href = 'index.html';
                 } else {
                     const error = await resp.json();
-                    alert('Error: ' + (error.error || 'Failed to update profile'));
+                    showError('Error: ' + (error.error || 'Failed to update profile'));
                 }
             } catch (err) {
                 console.error(err);
-                alert('Error saving profile');
+                showError('Error saving profile');
             }
         });
 
@@ -238,6 +249,36 @@
                 window.location.href = 'index.html?login=1';
             }
         });
+
+        // Show error toast
+        function showError(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast show position-fixed bottom-0 end-0 m-3';
+            toast.style.zIndex = '9999';
+            toast.innerHTML = `
+                <div class="toast-header bg-danger text-white">
+                    <strong class="me-auto">Error</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">
+                    ${escapeHtml(message)}
+                </div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 5000);
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
     </script>
 </body>
 </html>
